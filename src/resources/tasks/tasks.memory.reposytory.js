@@ -12,7 +12,7 @@ const deleteTask = async (boardId, taskId) => DB.deleteTask;
 
 const unassignTasks = async userId => DB.unassignTasks;
 
-const deleteTasks = async boardId => DB.deleteTasks;
+const deleteTasks = async (boardId, taskId) => DB.deleteTasks;
 
 module.exports = {
   addTask,

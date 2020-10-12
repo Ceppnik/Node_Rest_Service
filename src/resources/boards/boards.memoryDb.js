@@ -1,4 +1,5 @@
 const { Board, Column } = require('./boards.model');
+const { deleteTasks } = require('../tasks/tasks.memoryDb');
 
 const dbBoards = [
   new Board({
@@ -54,12 +55,13 @@ const updateBoard = async (id, board) => {
 };
 
 const deleteBoard = async id => {
-  const boardIndex = dbBoards.findIndex(board => board.id === id);
+  const boardIndex = dbBoards.findIndex(i => i.id === id);
   if (boardIndex === -1) return;
-
+  await deleteTasks(id);
   dbBoards.splice(boardIndex, 1);
   return true;
 };
+
 
 module.exports = {
   getAllBoard,

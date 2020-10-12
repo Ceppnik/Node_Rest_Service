@@ -18,7 +18,7 @@ const addTask = async task => {
 
 const getTask = async (boardId, taskId) => {
   const allTasks = await getAll(boardId);
-  const task = allTasks.find(el => el.id === taskId);
+  const task = allTasks.filter(el => el.id === taskId);
   return task;
 };
 

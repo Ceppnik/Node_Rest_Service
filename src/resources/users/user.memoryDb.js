@@ -1,4 +1,5 @@
 const User = require('./user.model');
+const { unassignTasks } = require('../tasks/tasks.memoryDb');
 
 const dbUsers = [];
 
@@ -29,7 +30,7 @@ const updateUser = async (id, body) => {
 const deleteUser = async id => {
   const userIndex = dbUsers.findIndex(user => user.id === id);
   if (userIndex === -1) return;
-
+  await unassignTasks(id);
   dbUsers.splice(userIndex, 1);
   return true;
 };
