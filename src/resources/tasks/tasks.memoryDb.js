@@ -10,17 +10,14 @@ const tasks = [
 
 const getAll = async boardId => tasks.filter(task => task.boardId === boardId);
 
-const addTask = async task => {
-  const newTask = new Task(task);
+const addTask = async (boardId, task) => {
+  const newTask = new Task({ ...task, boardId });
   tasks.push(newTask);
   return newTask;
 };
 
-const getTask = async (boardId, taskId) => {
-  const allTasks = await getAll(boardId);
-  const task = allTasks.filter(el => el.id === taskId);
-  return task;
-};
+const getTask = async (boardId, taskId) =>
+  tasks.find(task => task.id === taskId);
 
 const updateTask = async (boardId, taskId, task) => {
   const currentTask = await getTask(boardId, taskId);

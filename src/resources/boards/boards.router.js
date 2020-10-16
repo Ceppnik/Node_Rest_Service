@@ -1,16 +1,6 @@
 const router = require('express').Router();
 const boardService = require('./boards.service');
 const boardsService = require('./boards.service');
-const taskRouter = require('../tasks/tasks.router');
-
-router.use(
-  '/:id/tasks/',
-  (req, res, next) => {
-    req.boardId = req.params.id;
-    next();
-  },
-  taskRouter
-);
 
 router.route('/').get(async (req, res) => {
   const boards = await boardsService.getAll();

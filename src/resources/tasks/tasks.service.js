@@ -2,7 +2,7 @@ const tasksRepo = require('./tasks.memory.reposytory');
 
 const getAll = boardId => tasksRepo.getAll(boardId);
 
-const addTask = task => tasksRepo.addTask(task);
+const addTask = (boardId, task) => tasksRepo.addTask(boardId, task);
 
 const getTask = async (boardId, taskId) => {
   const task = await tasksRepo.getTask(boardId, taskId);
