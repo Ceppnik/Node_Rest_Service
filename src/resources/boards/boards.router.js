@@ -2,37 +2,49 @@ const router = require('express').Router();
 const boardService = require('./boards.service');
 const boardsService = require('./boards.service');
 
-router.route('/').get(async (req, res) => {
-  const boards = await boardsService.getAll();
-  res.json(boards);
-});
-
-router.route('/:id').get(async (req, res) => {
+router.route('/').get(async (req, res, next) => {
   try {
-    const board = await boardsService.get(req.params.id);
-    res.json(board);
-  } catch (e) {
-    res.status(404).send(e.message);
+    const boards = await boardsService.getAll();
+    res.json(boards);
+  } catch (err) {
+    return next(err);
   }
 });
 
-router.route('/').post(async (req, res) => {
-  const board = await boardService.create(req.body);
-  res.json(board);
+router.route('/:id').get(async (req, res, next) => {
+  try {
+    const board = await boardsService.get(req.params.id);
+    res.json(board);
+  } catch (err) {
+    return next(err);
+  }
 });
 
-router.route('/:id').put(async (req, res) => {
-  const board = await boardService.update(req.params.id, req.body);
-  res.json(board);
+router.route('/').post(async (req, res, next) => {
+  try {
+    const board = await boardService.create(req.body);
+    res.json(board);
+  } catch (err) {
+    return next(err);
+  }
 });
 
-router.route('/:id').delete(async (req, res) => {
+router.route('/:id').put(async (req, res, next) => {
+  try {
+    const board = await boardService.update(req.params.id, req.body);
+    res.json(board);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+router.route('/:id').delete(async (req, res, next) => {
   try {
     const isDeleted = await boardsService.deleteBoard(req.params.id);
     if (isDeleted) res.send('board deleted');
-    else res.send('board not found!');
-  } catch (e) {
-    res.status(404).send(e.message);
+    else res.status(404).send('board not found!');
+  } catch (err) {
+    return next(err);
   }
 });
 

@@ -5,11 +5,20 @@ const YAML = require('yamljs');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/boards.router');
 const taskRouter = require('./resources/tasks/tasks.router');
-
+const { infoLogger, errorLogger } = require('./common/log');
+const errorHandler = require('./common/errorHandler');
 const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
 app.use(express.json());
+
+process.on('uncaughtException', error => {
+  console.error(`Captured error: ${error.message}`);
+});
+
+process.on('unhandledRejection', reason => {
+  console.error(`Unhandled rejection detected: ${reason.message}`);
+});
 
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
@@ -21,15 +30,29 @@ app.use('/', (req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  infoLogger.log('info', {
+    time: new Date(),
+    url: req.url,
+    query: req.query,
+    method: req.method,
+    body: req.body,
+    code: res.statusCode
+  });
+  next();
+});
+
 app.use('/users', userRouter);
 
 app.use('/boards', boardRouter);
 
 boardRouter.use('/:boardId/tasks', taskRouter);
 
+app.use(errorHandler);
+
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
+  errorLogger.log('error', `Error, code:${err.status}, message:${err.message}`);
+  next();
 });
 
 module.exports = app;

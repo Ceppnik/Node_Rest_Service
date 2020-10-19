@@ -2,13 +2,7 @@ const DB = require('./user.memoryDb');
 
 const getAll = async () => DB.getAllUser();
 
-const get = async id => {
-  const user = await DB.getUser(id);
-  if (!user) {
-    throw new Error(`The user with id: ${id} was not found`);
-  }
-  return user;
-};
+const get = async id => await DB.getUser(id);
 
 const create = async user => DB.createUser(user);
 
