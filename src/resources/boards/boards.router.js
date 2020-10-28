@@ -48,9 +48,9 @@ router.route('/:id').put(async (req, res, next) => {
 
 router.route('/:id').delete(async (req, res, next) => {
   try {
-    if (await boardService.deleteBoard(req.params.id))
+    if (await boardService.deleteBoard(req.params.id)) {
       res.status(204).send('board deleted');
-    else res.status(404).send('not found');
+    } else res.status(404).send('not found');
   } catch (err) {
     return next(err);
   }

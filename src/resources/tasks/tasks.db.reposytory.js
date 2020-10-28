@@ -20,11 +20,16 @@ const deleteTask = async (boardId, taskId) =>
 const unassignTasks = async userId =>
   await Task.updateMany({ userId }, { userId: null });
 
+const deleteTasks = async boardId => {
+  await Task.deleteMany({ boardId });
+};
+
 module.exports = {
   addTask,
   getAll,
   getTask,
   updateTask,
   deleteTask,
-  unassignTasks
+  unassignTasks,
+  deleteTasks
 };
