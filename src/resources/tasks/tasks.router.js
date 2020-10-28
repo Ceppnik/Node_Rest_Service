@@ -1,5 +1,6 @@
 const router = require('express').Router({ mergeParams: true });
 const tasksService = require('./tasks.service');
+const Task = require('./tasks.model');
 
 router
   .route('/')
@@ -14,7 +15,7 @@ router
     try {
       const newTask = await tasksService.addTask(req.params.boardId, req.body);
       if (newTask) {
-        res.json(newTask);
+        res.status(200).json(Task.toResponse(newTask));
       } else {
         res.status(400).send('Bad request');
       }
@@ -32,9 +33,9 @@ router
         req.params.id
       );
       if (task) {
-        res.json(task);
+        res.status(200).json(Task.toResponse(task));
       } else {
-        throw new customError(404, 'Task not found');
+        res.status(404).send('not found');
       }
     } catch (err) {
       return next(err);
@@ -47,7 +48,11 @@ router
         req.params.id,
         req.body
       );
-      res.json(task);
+      if (task) {
+        res.status(200).json(Task.toResponse(task));
+      } else {
+        res.status(404).send('not found');
+      }
     } catch (err) {
       return next(err);
     }
@@ -55,9 +60,9 @@ router
   .delete(async (req, res, next) => {
     try {
       if (await tasksService.deleteTask(req.params.boardId, req.params.id)) {
-        res.status(204).end();
+        res.status(200).send('deleted');
       } else {
-        res.status(404).send('Task not found');
+        res.status(404).send('not found');
       }
     } catch (err) {
       return next(err);

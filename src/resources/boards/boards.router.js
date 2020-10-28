@@ -1,11 +1,11 @@
 const router = require('express').Router();
 const boardService = require('./boards.service');
-const boardsService = require('./boards.service');
+const Board = require('./boards.model');
 
 router.route('/').get(async (req, res, next) => {
   try {
-    const boards = await boardsService.getAll();
-    res.json(boards);
+    const boards = await boardService.getAll();
+    res.json(boards.map(board => Board.toResponse(board)));
   } catch (err) {
     return next(err);
   }
@@ -13,8 +13,12 @@ router.route('/').get(async (req, res, next) => {
 
 router.route('/:id').get(async (req, res, next) => {
   try {
-    const board = await boardsService.get(req.params.id);
-    res.json(board);
+    const board = await boardService.get(req.params.id);
+    if (board) {
+      res.json(Board.toResponse(board));
+    } else {
+      res.status(404).send('board not found');
+    }
   } catch (err) {
     return next(err);
   }
@@ -23,7 +27,7 @@ router.route('/:id').get(async (req, res, next) => {
 router.route('/').post(async (req, res, next) => {
   try {
     const board = await boardService.create(req.body);
-    res.json(board);
+    if (board) res.status(200).json(Board.toResponse(board));
   } catch (err) {
     return next(err);
   }
@@ -31,8 +35,11 @@ router.route('/').post(async (req, res, next) => {
 
 router.route('/:id').put(async (req, res, next) => {
   try {
-    const board = await boardService.update(req.params.id, req.body);
-    res.json(board);
+    const count = await boardService.update(req.params.id, req.body);
+    if (count > 0) res.status(200).send('updated');
+    else {
+      res.status(404).send('not found');
+    }
   } catch (err) {
     return next(err);
   }
@@ -40,9 +47,9 @@ router.route('/:id').put(async (req, res, next) => {
 
 router.route('/:id').delete(async (req, res, next) => {
   try {
-    const isDeleted = await boardsService.deleteBoard(req.params.id);
-    if (isDeleted) res.send('board deleted');
-    else res.status(404).send('board not found!');
+    if ((await boardService.deleteBoard(req.params.id)) > 0)
+      res.status(200).send('board deleted');
+    else res.status(404).send('not found');
   } catch (err) {
     return next(err);
   }
