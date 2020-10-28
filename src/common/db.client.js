@@ -11,8 +11,8 @@ const connectToDB = cb => {
 
   const db = mongoose.connection;
   db.on('error', console.error.bind(console, 'connection error:'));
-  db.once('open', function() {
-    console.log(`we're connected!`);
+  db.once('open', () => {
+    console.log("we're connected!");
     db.dropDatabase();
     User.insertMany([
       { name: 'user1', login: 'admin1', password: 'admin1' },

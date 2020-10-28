@@ -11,9 +11,8 @@ const addTask = async (boardId, task) => {
 const getTask = async (boardId, taskId) =>
   await Task.findOne({ _id: taskId, boardId });
 
-const updateTask = async (boardId, taskId, task) => {
+const updateTask = async (boardId, taskId, task) =>
   (await Task.updateOne({ _id: taskId, boardId }, task)).ok ? task : null;
-};
 
 const deleteTask = async (boardId, taskId) =>
   (await Task.deleteOne({ _id: taskId, boardId })).n;
