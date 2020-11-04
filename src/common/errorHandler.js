@@ -9,6 +9,8 @@ class NotFoundError extends Error {
 const errorHandler = (err, req, res, next) => {
   if (err instanceof NotFoundError) {
     res.status(404).send(err.message);
+  } else if (err.status != 401) {
+    res.status(401).send(err.message);
   } else {
     err.status = 500;
     err.message = 'Sorry. Something went wrong on the server';

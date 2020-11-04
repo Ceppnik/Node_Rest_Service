@@ -1,5 +1,7 @@
 const User = require('./user.model');
 
+const getUserByLogin = async login => User.findOne({ login });
+
 const getAll = async () => {
   return User.find({});
 };
@@ -18,4 +20,4 @@ const update = async (id, body) => {
 
 const deleteUser = async id => (await User.deleteOne({ _id: id })).deletedCount;
 
-module.exports = { getAll, get, create, update, deleteUser };
+module.exports = { getUserByLogin, getAll, get, create, update, deleteUser };

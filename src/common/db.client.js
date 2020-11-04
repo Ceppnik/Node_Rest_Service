@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const User = require('../resources/users/user.model');
 const Board = require('../resources/boards/boards.model');
 const { MONGO_CONNECTION_STRING } = require('../common/config');
+const bcrypt = require('bcrypt');
 
 const connectToDB = cb => {
   mongoose.connect(MONGO_CONNECTION_STRING, {
@@ -15,8 +16,7 @@ const connectToDB = cb => {
     console.log("we're connected!");
     db.dropDatabase();
     User.insertMany([
-      { name: 'user1', login: 'admin1', password: 'admin1' },
-      { name: 'user2', login: 'admin2', password: 'admin2' }
+      { name: 'user1', login: 'admin', password: bcrypt.hashSync('admin', 10) }
     ]);
 
     Board.create({
